@@ -6,22 +6,17 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const API_KEY = "AIzaSyDUAzHMOpnn2il9217Ge3qgPnGHRogq3qY";
+const API_KEY = "YOUR_API_KEY_HERE";
 const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
-// Middleware
+// Serve static files
+app.use(express.static(path.join(__dirname)));
+
+// Enable CORS
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from current directory
-app.use(express.static(__dirname));
-
-// Serve index.html at root
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-// Proxy API
+// API route
 app.post("/api/gemini", async (req, res) => {
   try {
     const response = await fetch(URL, {
@@ -42,6 +37,9 @@ app.post("/api/gemini", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+// Handle root route (index.html)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
+
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
